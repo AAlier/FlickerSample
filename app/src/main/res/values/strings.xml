@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">FlickSample</string>
+    <string name="load">Load</string>
+    <string name="loading">Loading…</string>
+    <string name="photo_by">by</string>
+    <string name="search_title">Search Images</string>
+    <string name="search_hint">Enter here</string>
+</resources>
