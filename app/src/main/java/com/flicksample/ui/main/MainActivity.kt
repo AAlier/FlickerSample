@@ -6,6 +6,7 @@ import android.view.MenuItem
 import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import com.flicksample.R
+import com.flicksample.data.Injection
 import com.flicksample.model.Photo
 import com.flicksample.ui.base.EndlessRecyclerAdapter
 import com.flicksample.ui.main.adapter.PhotoListAdapter
@@ -16,7 +17,7 @@ import com.flicksample.views.search.MaterialSearchView
 import kotlinx.android.synthetic.main.view_list_photos.*
 
 class MainActivity : FullScreenPagerActivity(), MainContract.View, PhotoListener {
-    private val presenter: MainContract.Presenter by lazy { MainPresenter(this) }
+    private val presenter = Injection.getMainPresenter(this)
     private val adapter by lazy { PhotoListAdapter(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -16,14 +16,4 @@ interface ForumService {
         @Query("format") format: String,
         @Query("nojsoncallback") set: String
     ): SearchResult
-
-    companion object {
-        var instance: ForumService? = null
-            get() {
-                if (field == null) {
-                    field = HttpBuilder().initRetrofit()
-                }
-                return field
-            }
-    }
 }

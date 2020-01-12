@@ -1,7 +1,7 @@
 package com.flicksample.ui.main
 
 import android.text.TextUtils
-import com.flicksample.data.network.ForumService
+import com.flicksample.data.network.interactor.SearchPhotosInteractor
 import com.flicksample.model.Photo
 import com.flicksample.model.PhotoList
 import com.flicksample.util.FlickrApi
@@ -11,7 +11,8 @@ import java.util.*
 import kotlin.coroutines.CoroutineContext
 
 class MainPresenter(
-    private val view: MainContract.View
+    private val view: MainContract.View,
+    private val interactor: SearchPhotosInteractor
 ) : MainContract.Presenter, CoroutineScope {
     private var job: Job = Job()
     private var search: Job = Job()
@@ -42,7 +43,7 @@ class MainPresenter(
                 return@launch
             }
 
-            val response = request(query!!)
+            val response = interactor.search(query!!)
             withContext(Dispatchers.Main) {
                 view.onSuccess(response?.photos?.photo ?: emptyList(), false)
                 view.hideProgress()
@@ -57,7 +58,7 @@ class MainPresenter(
         withContext(Dispatchers.Default) {
             var hasNext = hasNext()
             while (photos.size < count && hasNext) {
-                val response = request(query)
+                val response = interactor.search(query)
                 pages.add(response!!.photos)
                 photos.addAll(response.photos.photo)
                 hasNext = hasNext()
@@ -85,18 +86,6 @@ class MainPresenter(
 
     private val errorHandler = CoroutineExceptionHandler { _, exception ->
         view.onError()
-    }
-
-    private suspend fun request(query: String) = withContext(Dispatchers.IO) {
-        return@withContext ForumService.instance?.getPhotos(
-            method = FlickrApi.METHOD,
-            key = FlickrApi.API_KEY,
-            extras = FlickrApi.EXTRAS,
-            query = query,
-            format = FlickrApi.FORMAT,
-            set = "1",
-            perPage = "${FlickrApi.PER_PAGE}"
-        )
     }
 
     override fun disableSearch() {
